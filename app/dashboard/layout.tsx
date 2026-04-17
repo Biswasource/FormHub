@@ -15,6 +15,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Settings", href: "/dashboard/settings", icon: RiSettings4Line },
   ]
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  }
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[#f4f4f5] dark:bg-[#0a0a0a] text-black dark:text-white transition-colors">
       
@@ -83,10 +92,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <div className="p-4 border-t border-gray-200 dark:border-[#1e1e21]/60 flex flex-col gap-1">
           <ThemeToggle />
-          <Link href="/login" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14.5px] font-medium text-gray-500 dark:text-[#a1a1aa] hover:bg-gray-100 dark:hover:bg-[#18181b] hover:text-black dark:hover:text-white transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14.5px] font-medium text-gray-500 dark:text-[#a1a1aa] hover:bg-gray-100 dark:hover:bg-[#18181b] hover:text-black dark:hover:text-white transition-colors w-full text-left"
+          >
             <RiLogoutBoxRLine className="w-[18px] h-[18px]" />
             Log out
-          </Link>
+          </button>
         </div>
       </aside>
 

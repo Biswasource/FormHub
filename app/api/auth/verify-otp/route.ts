@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { connectToDatabase } from '@/lib/mongodb';
 import { User } from '@/lib/models/User';
 import { Otp } from '@/lib/models/Otp';
@@ -35,6 +36,15 @@ export async function POST(req: Request) {
 
     // Create User
     const newUser = await User.create({ name, email });
+
+    // Establish secure session after registration so the user is logged in automatically
+    const cookieStore = await cookies();
+    cookieStore.set('FORMHUBS_session', newUser._id.toString(), { 
+        httpOnly: true, 
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365 // 1 Year
+    });
 
     return NextResponse.json({ message: 'User registered successfully', user: newUser }, { status: 201 });
   } catch (error: any) {

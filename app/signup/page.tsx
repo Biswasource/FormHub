@@ -66,8 +66,8 @@ export default function SignupPage() {
       if (!res.ok) {
         throw new Error(data.error || "Failed to verify OTP")
       }
-      setSuccess("Account created successfully! Redirecting...")
-      setTimeout(() => router.push("/login"), 2000)
+      setSuccess("Account created successfully! Welcome aboard...")
+      setTimeout(() => router.push("/dashboard"), 2000)
     } catch (err: any) {
       setError(err.message)
     } finally {
