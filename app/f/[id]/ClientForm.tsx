@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RiCheckLine } from "@remixicon/react"
+import { RiCheckLine, RiStarLine } from "@remixicon/react"
 
 export default function ClientForm({ form }: { form: any }) {
   const isLight = form.theme === 'light';
