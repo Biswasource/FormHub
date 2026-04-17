@@ -67,6 +67,7 @@ const fieldCategories = [
 export default function FormBuilder() {
   const [fields, setFields] = useState<any[]>([])
   const [activeFieldId, setActiveFieldId] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<'fields' | 'canvas' | 'settings'>('canvas')
   const [searchQuery, setSearchQuery] = useState("")
 
   const [title, setTitle] = useState("FORMHUBSDemo Form")
@@ -144,41 +145,48 @@ export default function FormBuilder() {
   return (
     <div className="h-[100dvh] w-full overflow-hidden bg-[#0a0a0a] text-white flex flex-col selection:bg-[#ccff00] selection:text-black font-sans">
       {/* Top Navigation Bar */}
-      <header className="h-[64px] border-b border-[#1e1e21] flex items-center justify-between px-4 bg-[#0a0a0a] shrink-0">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="flex items-center gap-2 bg-[#18181b] hover:bg-[#27272a] text-white px-3 py-1.5 rounded-md text-[13.5px] font-medium transition-colors">
+      <header className="h-[64px] border-b border-[#1e1e21] flex items-center justify-between px-4 bg-[#0a0a0a] shrink-0 z-50">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Link href="/dashboard" className="flex items-center gap-2 bg-[#18181b] hover:bg-[#27272a] text-white px-3 py-1.5 rounded-md text-[13px] sm:text-[13.5px] font-medium transition-colors">
             <RiArrowLeftLine className="w-[16px] h-[16px]" />
-            Go to Dashboard
+            <span className="hidden min-[420px]:inline">Back</span>
+            <span className="hidden sm:inline">to Dashboard</span>
           </Link>
-          <div className="text-[14px] text-[#71717a] font-medium hidden sm:block">{fields.length} fields</div>
+          <div className="text-[13px] sm:text-[14px] text-[#71717a] font-medium hidden min-[380px]:block">{fields.length} fields</div>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Button variant="ghost" className="h-9 px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] text-[13.5px] gap-1.5 rounded-md hidden md:flex">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          <Button variant="ghost" className="h-9 px-2 sm:px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] text-[13.5px] gap-1.5 rounded-md hidden md:flex">
             <RiBarChartBoxLine className="w-[16px] h-[16px]" /> Analytics
           </Button>
-          <Button variant="ghost" className="h-9 px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] text-[13.5px] gap-1.5 rounded-md hidden md:flex">
+          <Button variant="ghost" className="h-9 px-2 sm:px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] text-[13.5px] gap-1.5 rounded-md hidden lg:flex">
             <RiSettings4Line className="w-[16px] h-[16px]" /> Settings
           </Button>
-          <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="ghost" className="h-9 px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] rounded-md hidden md:flex">
+          <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="ghost" className="h-9 px-2 sm:px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] rounded-md hidden md:flex">
             {theme === 'dark' ? <RiSunLine className="w-[16px] h-[16px]" /> : <RiMoonLine className="w-[16px] h-[16px]" />}
           </Button>
           <div className="w-[1px] h-4 bg-[#27272a] mx-1 hidden md:block"></div>
-          <Button variant="outline" className="h-9 px-3 bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#18181b] rounded-md shadow-sm">
+          <Button variant="outline" className="h-9 w-9 sm:w-auto sm:px-3 bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#18181b] rounded-md shadow-sm flex items-center justify-center p-0 sm:p-auto">
             <RiEyeLine className="w-[16px] h-[16px]" />
+            <span className="hidden sm:ml-1.5 sm:inline">Preview</span>
           </Button>
-          <Button onClick={handleSaveForm} disabled={isSaving} className="h-9 px-4 bg-[#ccff00] text-black hover:bg-[#bdeb02] rounded-md font-semibold text-[13.5px] gap-1.5 shadow-sm">
-            <RiSave3Line className="w-[16px] h-[16px]" /> {isSaving ? "Saving..." : "Save"}
+          <Button onClick={handleSaveForm} disabled={isSaving} className="h-9 px-3 sm:px-4 bg-[#ccff00] text-black hover:bg-[#bdeb02] rounded-md font-semibold text-[13px] sm:text-[13.5px] gap-1.5 shadow-sm">
+            <RiSave3Line className="w-[16px] h-[16px]" /> <span>{isSaving ? "Saving..." : "Save"}</span>
           </Button>
         </div>
       </header>
 
       <main className="flex flex-1 overflow-hidden">
         {/* Left Sidebar: Components */}
-        <aside className="w-[280px] border-r border-[#1e1e21] flex flex-col bg-[#050505] shrink-0 custom-scrollbar">
-          <div className="p-4 border-b border-[#1e1e21] shrink-0">
-            <h2 className="text-[15px] font-semibold text-white mb-1">Form Fields</h2>
-            <p className="text-[13px] text-[#71717a]">Click to add fields to your form</p>
+        <aside className={`fixed inset-y-0 left-0 z-40 w-[280px] border-r border-[#1e1e21] flex flex-col bg-[#050505] shrink-0 custom-scrollbar transition-transform duration-300 lg:relative lg:translate-x-0 ${activeTab === 'fields' ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="p-4 border-b border-[#1e1e21] shrink-0 flex items-center justify-between">
+            <div>
+              <h2 className="text-[15px] font-semibold text-white mb-1">Form Fields</h2>
+              <p className="text-[13px] text-[#71717a]">Click to add fields to your form</p>
+            </div>
+            <button onClick={() => setActiveTab('canvas')} className="lg:hidden text-[#71717a] hover:text-white p-1">
+              <RiCloseLine className="w-5 h-5" />
+            </button>
           </div>
           <div className="p-4 border-b border-[#1e1e21] shrink-0">
             <div className="relative">
@@ -221,15 +229,15 @@ export default function FormBuilder() {
         </aside>
 
         {/* Center Canvas */}
-        <section className={`flex-1 overflow-y-auto w-full relative transition-colors ${theme === 'light' ? 'bg-[#f4f4f5]' : 'bg-[#0a0a0a]'}`}>
-          <div className="max-w-[700px] mx-auto py-12 px-6">
-            <div className="mb-10 group">
+        <section className={`flex-1 overflow-y-auto w-full relative transition-colors pb-20 lg:pb-0 ${theme === 'light' ? 'bg-[#f4f4f5]' : 'bg-[#0a0a0a]'} ${activeTab !== 'canvas' ? 'hidden lg:block' : 'block'}`}>
+          <div className="max-w-[700px] mx-auto py-8 sm:py-12 px-4 sm:px-6">
+            <div className="mb-8 sm:mb-10 group">
               <input 
                 type="text" 
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="FORMHUBSDemo Form" 
-                className={`w-full bg-transparent text-[36px] font-bold mb-2 placeholder:text-[#52525b] border-none outline-none focus:ring-0 p-0 ${theme === 'light' ? 'text-black' : 'text-white'}`}
+                className={`w-full bg-transparent text-[28px] sm:text-[36px] font-bold mb-2 placeholder:text-[#52525b] border-none outline-none focus:ring-0 p-0 ${theme === 'light' ? 'text-black' : 'text-white'}`}
               />
               <input 
                 type="text" 
@@ -251,12 +259,15 @@ export default function FormBuilder() {
                 fields.map((field) => (
                   <div 
                     key={field.id}
-                    onClick={() => setActiveFieldId(field.id)}
-                    className={`relative rounded-xl border-[1.5px] p-5 cursor-pointer transition-shadow group ${
+                    onClick={() => {
+                      setActiveFieldId(field.id);
+                      if (window.innerWidth < 1024) setActiveTab('settings');
+                    }}
+                    className={`relative rounded-xl border-[1.5px] p-4 sm:p-5 cursor-pointer transition-shadow group ${
                       theme === 'light' ? 'bg-white shadow-sm hover:border-gray-300' : 'bg-[#111113] hover:border-[#3f3f46]'
                     } ${
                       activeFieldId === field.id 
-                        ? 'border-[#ccff00] shadow-[0_0_0_4px_rgba(204,255,0,0.1)]' 
+                        ? 'border-[#ccff00] shadow-[0_0_0_4px_rgba(204,255,0,0.15)]' 
                         : (theme === 'light' ? 'border-gray-200' : 'border-[#27272a]')
                     }`}
                   >
@@ -360,14 +371,19 @@ export default function FormBuilder() {
         </section>
 
         {/* Right Sidebar: Settings */}
-        <aside className="w-[320px] border-l border-[#1e1e21] flex flex-col bg-[#050505] shrink-0">
+        <aside className={`fixed inset-y-0 right-0 z-40 w-full sm:w-[320px] border-l border-[#1e1e21] flex flex-col bg-[#050505] shrink-0 transition-transform duration-300 lg:relative lg:translate-x-0 ${activeTab === 'settings' ? 'translate-x-0' : 'translate-x-full'}`}>
           <div className="h-[60px] px-5 border-b border-[#1e1e21] flex items-center justify-between shrink-0">
             <h2 className="text-[15px] font-semibold text-white">Field Settings</h2>
-            {activeFieldId && (
-              <button onClick={() => setActiveFieldId(null)} className="text-[#71717a] hover:text-white transition-colors">
-                <RiCloseLine className="w-[20px] h-[20px]" />
+            <div className="flex items-center gap-1">
+              {activeFieldId && (
+                <button onClick={() => setActiveFieldId(null)} className="text-[#71717a] hover:text-white p-1 transition-colors">
+                  <RiCloseLine className="w-[18px] h-[18px]" />
+                </button>
+              )}
+              <button onClick={() => setActiveTab('canvas')} className="lg:hidden text-[#71717a] hover:text-white p-1">
+                <RiCloseLine className="w-5 h-5 ml-1" />
               </button>
-            )}
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto">
@@ -612,8 +628,32 @@ export default function FormBuilder() {
             )}
           </div>
         </aside>
-
       </main>
+
+      {/* Mobile Navigation Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-[#0a0a0a]/80 backdrop-blur-md border-t border-[#1e1e21] flex items-center justify-around px-4 lg:hidden z-30">
+        <button 
+          onClick={() => setActiveTab('fields')}
+          className={`flex flex-col items-center gap-1 transition-colors ${activeTab === 'fields' ? 'text-[#ccff00]' : 'text-[#71717a]'}`}
+        >
+          <RiAddLine className="w-6 h-6" />
+          <span className="text-[11px] font-medium">Fields</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('canvas')}
+          className={`flex flex-col items-center gap-1 transition-colors ${activeTab === 'canvas' ? 'text-[#ccff00]' : 'text-[#71717a]'}`}
+        >
+          <RiLayoutRowLine className="w-6 h-6" />
+          <span className="text-[11px] font-medium">Editor</span>
+        </button>
+        <button 
+          onClick={() => setActiveTab('settings')}
+          className={`flex flex-col items-center gap-1 transition-colors ${activeTab === 'settings' ? 'text-[#ccff00]' : 'text-[#71717a]'}`}
+        >
+          <RiSettings4Line className="w-6 h-6" />
+          <span className="text-[11px] font-medium">Config</span>
+        </button>
+      </nav>
 
       {/* Success Modal Overlay */}
       {savedFormLink && (
