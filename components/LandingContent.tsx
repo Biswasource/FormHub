@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 
 interface LandingContentProps {
@@ -10,7 +10,7 @@ interface LandingContentProps {
 }
 
 export default function LandingContent({ session, loginHref, startHref }: LandingContentProps) {
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -21,14 +21,14 @@ export default function LandingContent({ session, loginHref, startHref }: Landin
     },
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: { 
       opacity: 1, 
       y: 0, 
       transition: { 
         duration: 0.8, 
-        ease: [0.21, 1.11, 0.81, 0.99] // Custom spring-like easing
+        ease: [0.21, 1.11, 0.81, 0.99] // Now correctly typed via Variants
       } 
     },
   };
@@ -56,7 +56,7 @@ export default function LandingContent({ session, loginHref, startHref }: Landin
       <motion.header 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as any }}
         className="fixed top-0 left-0 right-0 z-50 border-b border-white/20 bg-white/40 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
       >
         <nav className="flex items-center justify-between mx-auto max-w-[1300px] h-[72px] px-6">
