@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/request';
 
 export function middleware(request: NextRequest) {
-  const session = request.cookies.get('FORMHUBS_session');
+  const session = request.cookies.get('FORMHUBS_session')?.value;
   const { pathname } = request.nextUrl;
 
   // Protect dashboard routes

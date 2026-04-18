@@ -143,11 +143,11 @@ export default function FormBuilder() {
   })).filter(cat => cat.items.length > 0);
 
   return (
-    <div className="h-[100dvh] w-full overflow-hidden bg-[#0a0a0a] text-white flex flex-col selection:bg-[#ccff00] selection:text-black font-sans">
+    <div className={`h-[100dvh] w-full overflow-hidden flex flex-col selection:bg-[#ccff00] selection:text-black font-sans transition-colors duration-200 ${theme === 'light' ? 'bg-[#f4f4f5] text-black' : 'bg-[#0a0a0a] text-white'}`}>
       {/* Top Navigation Bar */}
-      <header className="h-[64px] border-b border-[#1e1e21] flex items-center justify-between px-4 bg-[#0a0a0a] shrink-0 z-50">
+      <header className={`h-[64px] border-b flex items-center justify-between px-4 shrink-0 z-50 transition-colors ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-[#0a0a0a] border-[#1e1e21]'}`}>
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/dashboard" className="flex items-center gap-2 bg-[#18181b] hover:bg-[#27272a] text-white px-3 py-1.5 rounded-md text-[13px] sm:text-[13.5px] font-medium transition-colors">
+          <Link href="/dashboard" className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-[13px] sm:text-[13.5px] font-medium transition-colors ${theme === 'light' ? 'bg-gray-100 hover:bg-gray-200 text-black' : 'bg-[#18181b] hover:bg-[#27272a] text-white'}`}>
             <RiArrowLeftLine className="w-[16px] h-[16px]" />
             <span className="hidden min-[420px]:inline">Back</span>
             <span className="hidden sm:inline">to Dashboard</span>
@@ -156,17 +156,17 @@ export default function FormBuilder() {
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2.5">
-          <Button variant="ghost" className="h-9 px-2 sm:px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] text-[13.5px] gap-1.5 rounded-md hidden md:flex">
+          <Button variant="ghost" className={`h-9 px-2 sm:px-3 text-[13.5px] gap-1.5 rounded-md hidden md:flex ${theme === 'light' ? 'text-gray-600 hover:text-black hover:bg-gray-100' : 'text-[#a1a1aa] hover:text-white hover:bg-[#18181b]'}`}>
             <RiBarChartBoxLine className="w-[16px] h-[16px]" /> Analytics
           </Button>
-          <Button variant="ghost" className="h-9 px-2 sm:px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] text-[13.5px] gap-1.5 rounded-md hidden lg:flex">
+          <Button variant="ghost" className={`h-9 px-2 sm:px-3 text-[13.5px] gap-1.5 rounded-md hidden lg:flex ${theme === 'light' ? 'text-gray-600 hover:text-black hover:bg-gray-100' : 'text-[#a1a1aa] hover:text-white hover:bg-[#18181b]'}`}>
             <RiSettings4Line className="w-[16px] h-[16px]" /> Settings
           </Button>
-          <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="ghost" className="h-9 px-2 sm:px-3 text-[#a1a1aa] hover:text-white hover:bg-[#18181b] rounded-md hidden md:flex">
+          <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="ghost" className={`h-9 px-2 sm:px-3 rounded-md hidden md:flex ${theme === 'light' ? 'text-gray-600 hover:text-black hover:bg-gray-100' : 'text-[#a1a1aa] hover:text-white hover:bg-[#18181b]'}`}>
             {theme === 'dark' ? <RiSunLine className="w-[16px] h-[16px]" /> : <RiMoonLine className="w-[16px] h-[16px]" />}
           </Button>
-          <div className="w-[1px] h-4 bg-[#27272a] mx-1 hidden md:block"></div>
-          <Button variant="outline" className="h-9 w-9 sm:w-auto sm:px-3 bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#18181b] rounded-md shadow-sm flex items-center justify-center p-0 sm:p-auto">
+          <div className={`w-[1px] h-4 mx-1 hidden md:block ${theme === 'light' ? 'bg-gray-200' : 'bg-[#27272a]'}`}></div>
+          <Button variant="outline" className={`h-9 w-9 sm:w-auto sm:px-3 rounded-md shadow-sm flex items-center justify-center p-0 sm:p-auto ${theme === 'light' ? 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-black' : 'bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#18181b]'}`}>
             <RiEyeLine className="w-[16px] h-[16px]" />
             <span className="hidden sm:ml-1.5 sm:inline">Preview</span>
           </Button>
@@ -178,24 +178,24 @@ export default function FormBuilder() {
 
       <main className="flex flex-1 overflow-hidden">
         {/* Left Sidebar: Components */}
-        <aside className={`fixed inset-y-0 left-0 z-40 w-[280px] border-r border-[#1e1e21] flex flex-col bg-[#050505] shrink-0 custom-scrollbar transition-transform duration-300 lg:relative lg:translate-x-0 ${activeTab === 'fields' ? 'translate-x-0' : '-translate-x-full'}`}>
-          <div className="p-4 border-b border-[#1e1e21] shrink-0 flex items-center justify-between">
+        <aside className={`fixed inset-y-0 left-0 z-40 w-[280px] border-r flex flex-col shrink-0 custom-scrollbar transition-all duration-300 lg:relative lg:translate-x-0 ${activeTab === 'fields' ? 'translate-x-0' : '-translate-x-full'} ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-[#050505] border-[#1e1e21]'}`}>
+          <div className={`p-4 border-b shrink-0 flex items-center justify-between ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
             <div>
-              <h2 className="text-[15px] font-semibold text-white mb-1">Form Fields</h2>
+              <h2 className={`text-[15px] font-semibold mb-1 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Form Fields</h2>
               <p className="text-[13px] text-[#71717a]">Click to add fields to your form</p>
             </div>
             <button onClick={() => setActiveTab('canvas')} className="lg:hidden text-[#71717a] hover:text-white p-1">
               <RiCloseLine className="w-5 h-5" />
             </button>
           </div>
-          <div className="p-4 border-b border-[#1e1e21] shrink-0">
+          <div className={`p-4 border-b shrink-0 ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
             <div className="relative">
               <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 w-[16px] h-[16px] text-[#71717a]" />
               <Input 
                 placeholder="Search fields..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-9 bg-[#111113] border-[#27272a] rounded-md pl-9 text-[13px] text-white placeholder:text-[#52525b] focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                className={`w-full h-9 rounded-md pl-9 text-[13px] placeholder:text-[#52525b] focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
               />
             </div>
           </div>
@@ -208,13 +208,13 @@ export default function FormBuilder() {
                     <div 
                       key={i} 
                       onClick={() => addField(item)}
-                      className="group flex gap-3 p-3 rounded-lg border border-[#27272a] bg-[#111113] hover:border-[#ccff00]/50 hover:bg-[#18181b] cursor-pointer transition-colors relative"
+                      className={`group flex gap-3 p-3 rounded-lg border cursor-pointer transition-colors relative ${theme === 'light' ? 'bg-white border-gray-200 hover:border-[#ccff00] hover:bg-gray-50' : 'bg-[#111113] border-[#27272a] hover:border-[#ccff00]/50 hover:bg-[#18181b]'}`}
                     >
-                      <div className="w-[32px] h-[32px] shrink-0 bg-[#0a0a0a] border border-[#27272a] rounded flex items-center justify-center text-[#a1a1aa] group-hover:text-[#ccff00] transition-colors">
+                      <div className={`w-[32px] h-[32px] shrink-0 border rounded flex items-center justify-center transition-colors ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-gray-500 group-hover:text-[#ccff00]' : 'bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] group-hover:text-[#ccff00]'}`}>
                         <item.icon className="w-[16px] h-[16px]" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[13.5px] font-medium text-white mb-0.5">{item.label}</span>
+                        <span className={`text-[13.5px] font-medium mb-0.5 ${theme === 'light' ? 'text-black' : 'text-white'}`}>{item.label}</span>
                         <span className="text-[12px] text-[#71717a] leading-tight">{item.desc}</span>
                       </div>
                     </div>
@@ -250,9 +250,9 @@ export default function FormBuilder() {
 
             <div className="space-y-4">
               {fields.length === 0 ? (
-                <div className="w-full p-12 border border-dashed border-[#27272a] bg-[#050505] rounded-xl flex flex-col items-center justify-center text-[#71717a]">
+                <div className={`w-full p-12 border border-dashed rounded-xl flex flex-col items-center justify-center text-[#71717a] ${theme === 'light' ? 'bg-white border-gray-300' : 'bg-[#050505] border-[#27272a]'}`}>
                    <RiAddLine className="w-[32px] h-[32px] mb-3 text-[#52525b]" />
-                   <p className="text-[14.5px] font-medium mb-1">Your form is empty</p>
+                   <p className={`text-[14.5px] font-medium mb-1 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Your form is empty</p>
                    <p className="text-[13px]">Click any field on the left sidebar to add it here.</p>
                 </div>
               ) : (
@@ -371,9 +371,9 @@ export default function FormBuilder() {
         </section>
 
         {/* Right Sidebar: Settings */}
-        <aside className={`fixed inset-y-0 right-0 z-40 w-full sm:w-[320px] border-l border-[#1e1e21] flex flex-col bg-[#050505] shrink-0 transition-transform duration-300 lg:relative lg:translate-x-0 ${activeTab === 'settings' ? 'translate-x-0' : 'translate-x-full'}`}>
-          <div className="h-[60px] px-5 border-b border-[#1e1e21] flex items-center justify-between shrink-0">
-            <h2 className="text-[15px] font-semibold text-white">Field Settings</h2>
+        <aside className={`fixed inset-y-0 right-0 z-40 w-full sm:w-[320px] border-l flex flex-col shrink-0 transition-all duration-300 lg:relative lg:translate-x-0 ${activeTab === 'settings' ? 'translate-x-0' : 'translate-x-full'} ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-[#050505] border-[#1e1e21]'}`}>
+          <div className={`h-[60px] px-5 border-b flex items-center justify-between shrink-0 ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+            <h2 className={`text-[15px] font-semibold ${theme === 'light' ? 'text-black' : 'text-white'}`}>Field Settings</h2>
             <div className="flex items-center gap-1">
               {activeFieldId && (
                 <button onClick={() => setActiveFieldId(null)} className="text-[#71717a] hover:text-white p-1 transition-colors">
@@ -394,9 +394,9 @@ export default function FormBuilder() {
                </div>
             ) : (
                <div className="p-5 space-y-6">
-                 {/* Basic Settings */}
+                  {/* Basic Settings */}
                  <div className="space-y-4">
-                   <h3 className="text-[14px] font-semibold text-white border-b border-[#1e1e21] pb-2">Basic Settings</h3>
+                   <h3 className={`text-[14px] font-semibold border-b pb-2 ${theme === 'light' ? 'text-black border-gray-100' : 'text-white border-[#1e1e21]'}`}>Basic Settings</h3>
                    
                    <div className="space-y-2">
                      <label className="text-[13px] font-medium text-[#a1a1aa]">Field Label</label>
@@ -404,7 +404,7 @@ export default function FormBuilder() {
                        value={activeField.label}
                        onChange={(e) => updateActiveField("label", e.target.value)}
                        placeholder="Enter field label"
-                       className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                       className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                      />
                      <p className="text-[11.5px] text-[#71717a]">The label that appears above the field</p>
                    </div>
@@ -416,7 +416,7 @@ export default function FormBuilder() {
                         value={activeField.placeholder || ""}
                         onChange={(e) => updateActiveField("placeholder", e.target.value)}
                         placeholder={activeField.type === 'email' ? "Enter email address" : "Enter placeholder"}
-                        className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                        className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                       />
                       <p className="text-[11.5px] text-[#71717a]">Hint text that appears inside the field</p>
                     </div>
@@ -428,7 +428,7 @@ export default function FormBuilder() {
                        value={activeField.description || ""}
                        onChange={(e) => updateActiveField("description", e.target.value)}
                        placeholder="Enter field description (shown below the field)"
-                       className="w-full bg-[#111113] border border-[#27272a] rounded-md p-3 text-[13px] text-white focus:outline-none focus:ring-1 focus:ring-[#ccff00] min-h-[80px]"
+                       className={`w-full rounded-md p-3 text-[13px] focus:outline-none focus:ring-1 focus:ring-[#ccff00] min-h-[80px] ${theme === 'light' ? 'bg-gray-50 border border-gray-200 text-black' : 'bg-[#111113] border border-[#27272a] text-white'}`}
                      />
                      <p className="text-[11.5px] text-[#71717a]">Additional help text shown below the field</p>
                    </div>
@@ -436,7 +436,7 @@ export default function FormBuilder() {
                    {!['statement', 'banner'].includes(activeField.type) && (
                      <div className="flex items-center justify-between cursor-pointer pt-2" onClick={() => updateActiveField("required", !activeField.required)}>
                        <div>
-                          <label className="text-[13px] font-medium text-[#a1a1aa] cursor-pointer">Required field</label>
+                          <label className={`text-[13px] font-medium cursor-pointer ${theme === 'light' ? 'text-black' : 'text-[#a1a1aa]'}`}>Required field</label>
                           <p className="text-[11.5px] text-[#71717a] mt-0.5 pointer-events-none">Users must fill this field to submit the form</p>
                        </div>
                        <div className={`w-9 h-5 rounded-full relative transition-colors ${activeField.required ? 'bg-[#ccff00]' : 'bg-[#27272a]'}`}>
@@ -448,8 +448,8 @@ export default function FormBuilder() {
 
                  {/* Email Validation (Only for email type) */}
                  {activeField.type === 'email' && (
-                  <div className="space-y-4 pt-4 border-t border-[#1e1e21]">
-                    <h3 className="text-[14px] font-semibold text-white pb-2">Email Validation</h3>
+                  <div className={`space-y-4 pt-4 border-t ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+                    <h3 className={`text-[14px] font-semibold pb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Email Validation</h3>
                     
                     <div className="space-y-2">
                       <label className="text-[13px] font-medium text-[#a1a1aa]">Auto-complete Domain</label>
@@ -458,9 +458,9 @@ export default function FormBuilder() {
                           value={activeField.autoDomain || ""}
                           onChange={(e) => updateActiveField("autoDomain", e.target.value)}
                           placeholder="e.g., business.com"
-                          className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                          className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                         />
-                        <Button className="h-9 px-4 bg-[#27272a] hover:bg-[#3f3f46] text-white rounded-md text-[13px] shadow-none ring-0 border-0">Set</Button>
+                        <Button className={`h-9 px-4 rounded-md text-[13px] shadow-none ring-0 border-0 transition-colors ${theme === 'light' ? 'bg-gray-100 hover:bg-gray-200 text-black' : 'bg-[#27272a] hover:bg-[#3f3f46] text-white'}`}>Set</Button>
                       </div>
                       <p className="text-[11.5px] text-[#71717a]">Users can enter just their username and the domain will be auto-completed</p>
                     </div>
@@ -471,7 +471,7 @@ export default function FormBuilder() {
                         value={activeField.allowedDomains || ""}
                         onChange={(e) => updateActiveField("allowedDomains", e.target.value)}
                         placeholder="e.g., company.com"
-                        className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                        className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                       />
                       <p className="text-[11.5px] text-[#71717a]">Only emails from these domains will be accepted</p>
                     </div>
@@ -482,7 +482,7 @@ export default function FormBuilder() {
                         value={activeField.rejectedDomains || ""}
                         onChange={(e) => updateActiveField("rejectedDomains", e.target.value)}
                         placeholder="e.g., temp-mail.org"
-                        className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                        className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                       />
                       <p className="text-[11.5px] text-[#71717a]">Emails from these domains will be rejected (temporary email services are blocked by default)</p>
                     </div>
@@ -500,18 +500,18 @@ export default function FormBuilder() {
                         value={activeField.customErrorMsg || ""}
                         onChange={(e) => updateActiveField("customErrorMsg", e.target.value)}
                         placeholder="Leave empty to use default messages"
-                        className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                        className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                       />
                     </div>
                   </div>
                  )}
 
                  {/* Pre-population */}
-                 {!['statement', 'banner'].includes(activeField.type) && (
-                  <div className="space-y-4 pt-4 border-t border-[#1e1e21]">
+                  {!['statement', 'banner'].includes(activeField.type) && (
+                  <div className={`space-y-4 pt-4 border-t ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
                      <div className="flex items-center justify-between cursor-pointer" onClick={() => updateActiveField("prePopulate", !activeField.prePopulate)}>
                        <div>
-                          <label className="text-[14px] font-semibold text-white cursor-pointer block mb-1">Pre-population</label>
+                          <label className={`text-[14px] font-semibold cursor-pointer block mb-1 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Pre-population</label>
                           <p className="text-[11.5px] text-[#71717a] pointer-events-none">Automatically fill this field with existing data</p>
                        </div>
                        <div className={`w-9 h-5 rounded-full relative transition-colors shrink-0 ${activeField.prePopulate ? 'bg-[#ccff00]' : 'bg-[#27272a]'}`}>
@@ -521,10 +521,10 @@ export default function FormBuilder() {
                   </div>
                  )}
 
-                 {/* General Validation */}
-                 {['text', 'email', 'textarea', 'url', 'phone', 'number'].includes(activeField.type) && (
-                  <div className="space-y-4 pt-4 border-t border-[#1e1e21]">
-                    <h3 className="text-[14px] font-semibold text-white pb-2">Validation</h3>
+                  {/* General Validation */}
+                  {['text', 'email', 'textarea', 'url', 'phone', 'number'].includes(activeField.type) && (
+                  <div className={`space-y-4 pt-4 border-t ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+                    <h3 className={`text-[14px] font-semibold pb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Validation</h3>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -534,7 +534,7 @@ export default function FormBuilder() {
                           value={activeField.minChars || ""}
                           onChange={(e) => updateActiveField("minChars", e.target.value)}
                           placeholder="0"
-                          className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                          className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                         />
                         <p className="text-[11px] text-[#71717a] leading-tight">Minimum number of characters required</p>
                       </div>
@@ -545,7 +545,7 @@ export default function FormBuilder() {
                           value={activeField.maxChars || ""}
                           onChange={(e) => updateActiveField("maxChars", e.target.value)}
                           placeholder="255"
-                          className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                          className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                         />
                         <p className="text-[11px] text-[#71717a] leading-tight">Maximum number of characters allowed</p>
                       </div>
@@ -557,17 +557,17 @@ export default function FormBuilder() {
                         value={activeField.regexPattern || ""}
                         onChange={(e) => updateActiveField("regexPattern", e.target.value)}
                         placeholder="^abc.*$"
-                        className="bg-[#111113] border-[#27272a] h-9 text-white font-mono text-[12.5px] focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                        className={`h-9 font-mono text-[12.5px] focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                       />
                       <p className="text-[11.5px] text-[#71717a]">Regular expression pattern for validation</p>
                     </div>
                   </div>
                  )}
 
-                 {/* Options Editor for Selection Fields */}
-                 {['dropdown', 'checkbox', 'radio', 'poll'].includes(activeField.type) && (
-                  <div className="space-y-4 pt-4 border-t border-[#1e1e21]">
-                    <h3 className="text-[14px] font-semibold text-white pb-2">Options</h3>
+                  {/* Options Editor for Selection Fields */}
+                  {['dropdown', 'checkbox', 'radio', 'poll'].includes(activeField.type) && (
+                  <div className={`space-y-4 pt-4 border-t ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+                    <h3 className={`text-[14px] font-semibold pb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Options</h3>
                     <div className="space-y-2">
                        {(activeField.options || []).map((opt: string, idx: number) => (
                           <div key={idx} className="flex items-center gap-2">
@@ -579,18 +579,18 @@ export default function FormBuilder() {
                                   updateActiveField("options", newOptions);
                                }}
                                placeholder={`Option ${idx + 1}`}
-                               className="bg-[#111113] border-[#27272a] h-9 text-[13px] text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                               className={`h-9 text-[13px] focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                              />
                              <button onClick={() => {
                                 const newOptions = [...(activeField.options || [])];
                                 newOptions.splice(idx, 1);
                                 updateActiveField("options", newOptions);
-                             }} className="p-2 shrink-0 text-[#71717a] hover:text-red-500 hover:bg-red-500/10 rounded-md transition-colors">
+                             }} className={`p-2 shrink-0 rounded-md transition-colors ${theme === 'light' ? 'text-gray-400 hover:text-red-500 hover:bg-red-50' : 'text-[#71717a] hover:text-red-500 hover:bg-red-500/10'}`}>
                                 <RiCloseLine className="w-4 h-4" />
                              </button>
                           </div>
                        ))}
-                       <Button onClick={() => updateActiveField("options", [...(activeField.options || []), `Option ${(activeField.options?.length || 0) + 1}`])} variant="outline" className="w-full mt-2 h-9 border-[#27272a] text-[#a1a1aa] hover:text-white bg-[#111113] hover:bg-[#18181b]">
+                       <Button onClick={() => updateActiveField("options", [...(activeField.options || []), `Option ${(activeField.options?.length || 0) + 1}`])} variant="outline" className={`w-full mt-2 h-9 transition-colors ${theme === 'light' ? 'border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-black' : 'border-[#27272a] text-[#a1a1aa] hover:text-white bg-[#111113] hover:bg-[#18181b]'}`}>
                            <RiAddLine className="w-4 h-4 mr-1" /> Add Option
                        </Button>
                     </div>
@@ -599,8 +599,8 @@ export default function FormBuilder() {
 
                  {/* Slider Logic */}
                  {activeField.type === 'slider' && (
-                  <div className="space-y-4 pt-4 border-t border-[#1e1e21]">
-                     <h3 className="text-[14px] font-semibold text-white pb-2">Slider Settings</h3>
+                  <div className={`space-y-4 pt-4 border-t ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+                     <h3 className={`text-[14px] font-semibold pb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Slider Settings</h3>
                      <div className="grid grid-cols-2 gap-4">
                        <div className="space-y-2">
                          <label className="text-[13px] font-medium text-[#a1a1aa]">Minimum Value</label>
@@ -608,7 +608,7 @@ export default function FormBuilder() {
                            type="number"
                            value={activeField.sliderMin !== undefined ? activeField.sliderMin : 0}
                            onChange={(e) => updateActiveField("sliderMin", Number(e.target.value))}
-                           className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                           className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                          />
                        </div>
                        <div className="space-y-2">
@@ -617,7 +617,7 @@ export default function FormBuilder() {
                            type="number"
                            value={activeField.sliderMax !== undefined ? activeField.sliderMax : 100}
                            onChange={(e) => updateActiveField("sliderMax", Number(e.target.value))}
-                           className="bg-[#111113] border-[#27272a] h-9 text-white focus-visible:ring-1 focus-visible:ring-[#ccff00]"
+                           className={`h-9 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
                          />
                        </div>
                      </div>
@@ -631,7 +631,7 @@ export default function FormBuilder() {
       </main>
 
       {/* Mobile Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-[#0a0a0a]/80 backdrop-blur-md border-t border-[#1e1e21] flex items-center justify-around px-4 lg:hidden z-30">
+      <nav className={`fixed bottom-0 left-0 right-0 h-16 backdrop-blur-md border-t flex items-center justify-around px-4 lg:hidden z-30 transition-colors ${theme === 'light' ? 'bg-white/80 border-gray-200' : 'bg-[#0a0a0a]/80 border-[#1e1e21]'}`}>
         <button 
           onClick={() => setActiveTab('fields')}
           className={`flex flex-col items-center gap-1 transition-colors ${activeTab === 'fields' ? 'text-[#ccff00]' : 'text-[#71717a]'}`}
@@ -658,24 +658,24 @@ export default function FormBuilder() {
       {/* Success Modal Overlay */}
       {savedFormLink && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#0a0a0a] border border-[#27272a] rounded-xl p-6 shadow-2xl relative">
-             <button onClick={() => setSavedFormLink("")} className="absolute right-4 top-4 text-[#71717a] hover:text-white">
+          <div className={`w-full max-w-md border rounded-xl p-6 shadow-2xl relative transition-colors ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-[#0a0a0a] border-[#27272a]'}`}>
+             <button onClick={() => setSavedFormLink("")} className="absolute right-4 top-4 text-[#71717a] hover:text-white transition-colors">
                 <RiCloseLine className="w-[20px] h-[20px]" />
              </button>
              <div className="w-12 h-12 bg-[#ccff00]/10 text-[#ccff00] rounded-full flex items-center justify-center mb-4">
                 <RiSave3Line className="w-[24px] h-[24px]" />
              </div>
-             <h2 className="text-xl font-bold text-white mb-2">Form Published!</h2>
+             <h2 className={`text-xl font-bold mb-2 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Form Published!</h2>
              <p className="text-[#a1a1aa] text-[14px] mb-6">Your form has been securely saved to the database. You can share this link with anyone to start collecting responses.</p>
              
              <div className="flex items-center gap-2 mb-6">
-                <Input value={savedFormLink} readOnly className="bg-[#111113] border-[#27272a] text-white focus-visible:ring-1 focus-visible:ring-[#ccff00] h-11" />
-                <Button onClick={() => navigator.clipboard.writeText(savedFormLink)} className="bg-[#27272a] hover:bg-[#3f3f46] text-white px-4 h-11">
+                <Input value={savedFormLink} readOnly className={`h-11 focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`} />
+                <Button onClick={() => navigator.clipboard.writeText(savedFormLink)} className={`px-4 h-11 transition-colors ${theme === 'light' ? 'bg-gray-100 hover:bg-gray-200 text-black' : 'bg-[#27272a] hover:bg-[#3f3f46] text-white'}`}>
                    Copy
                 </Button>
              </div>
              
-             <Link href={savedFormLink} target="_blank">
+             <Link href={savedFormLink} target="_blank" className="w-full block">
                 <Button className="w-full bg-[#ccff00] hover:bg-[#bdeb02] text-black font-bold text-[15px] h-12 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
                    Preview Public Form
                 </Button>
