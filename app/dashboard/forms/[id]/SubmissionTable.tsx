@@ -62,7 +62,6 @@ export default function SubmissionTable({ initialSubmissions, dataFields, formId
       console.error(error)
       alert("An error occurred")
     } finally {
-      setIsDeleting(null)
       setIsDeleting(false)
       setTargetId(null)
     }
