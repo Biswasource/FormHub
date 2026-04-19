@@ -65,13 +65,11 @@ export default function LandingContent({ session, loginHref, startHref }: Landin
             <motion.div 
                whileHover={{ scale: 1.05 }}
                whileTap={{ scale: 0.95 }}
-               className="w-[32px] h-[32px] bg-[#ccff00] rounded-full flex items-center justify-center shrink-0 shadow-sm"
+               className="w-[32px] h-[32px] bg-transparent rounded-full flex items-center justify-center shrink-0"
             >
-              <svg viewBox="0 0 24 24" className="w-[18px] h-[18px] fill-black" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5H15.5C18.5376 20.5 21 18.0376 21 15C21 11.5 18 8.5 14.5 8.5V7.5C14.5 5.29086 12.7091 3.5 10.5 3.5H12ZM15.5 12.5C16.8807 12.5 18 13.6193 18 15C18 16.3807 16.8807 17.5 15.5 17.5H12C9.23858 17.5 7 15.2614 7 12.5C7 9.73858 9.23858 7.5 12 7.5H13.5V10C13.5 11.3807 14.6193 12.5 15.5 12.5Z" />
-              </svg>
+              <img src="/logo.png" alt="FormHubs Logo" className="w-full h-full object-contain" />
             </motion.div>
-            <span className="font-bold text-[19px] tracking-tight text-[#0a0a0a]">FORMHUBS</span>
+            <span className="font-bold text-[19px] tracking-tight text-[#0a0a0a]">FormHubs</span>
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-6">
@@ -422,19 +420,19 @@ export default function LandingContent({ session, loginHref, startHref }: Landin
                 <span className="text-[12px] font-bold text-[#ccff00] uppercase tracking-[0.2em]">Support</span>
                 <h2 className="text-[40px] md:text-[56px] font-bold mt-4 leading-[1.1] tracking-tight">Frequently Asked Questions</h2>
                 <p className="mt-6 text-gray-500 leading-relaxed max-w-[320px]">
-                    Everything you need to know about Formhubs and how it helps you scale.
+                    Everything you need to know about FormHubs and how it helps you scale.
                 </p>
             </motion.div>
 
             {/* Right side: Accordions */}
             <div className="lg:w-2/3 flex flex-col border-t border-gray-100">
                 {[
-                    { q: "What is Formhubs?", a: "Formhubs is a developer-first form infrastructure platform that lets you create custom form UIs and send data to our secure endpoints without writing backend code." },
+                    { q: "What is FormHubs?", a: "FormHubs is a developer-first form infrastructure platform that lets you create custom form UIs and send data to our secure endpoints without writing backend code." },
                     { q: "Is there a free trial?", a: "Yes! We have a generous free tier that includes up to 250 submissions per month and basic integrations. No credit card required." },
-                    { q: "Why use Formhubs instead of Google Forms?", a: "Unlike Google Forms, Formhubs gives you total control over the UI, follows your brand's design system, and provides advanced data routing and API access for developers." },
+                    { q: "Why use FormHubs instead of Google Forms?", a: "Unlike Google Forms, FormHubs gives you total control over the UI, follows your brand's design system, and provides advanced data routing and API access for developers." },
                     { q: "What types of forms can I create?", a: "From simple contact forms to complex multi-step surveys, payment forms, and internal data collection tools—if you can build it in HTML/React, we can power it." },
                     { q: "How is my data protected?", a: "We use enterprise-grade encryption for all data at rest and in transit. Your data is stored in secure, SOC2 compliant data centers." },
-                    { q: "Can I customize my forms?", a: "Absolutely. Formhubs is headless, meaning you have 100% control over the CSS and React components used to render your forms." }
+                    { q: "Can I customize my forms?", a: "Absolutely. FormHubs is headless, meaning you have 100% control over the CSS and React components used to render your forms." }
                 ].map((faq, i) => (
                     <motion.div 
                         key={i} 
@@ -467,12 +465,10 @@ export default function LandingContent({ session, loginHref, startHref }: Landin
       <footer className="border-t border-gray-100 py-20 px-6">
         <div className="max-w-[1300px] mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
             <div className="flex items-center gap-2.5">
-                <div className="w-[28px] h-[28px] bg-[#ccff00] rounded-full flex items-center justify-center shrink-0">
-                    <svg viewBox="0 0 24 24" className="w-[14px] h-[14px] fill-black" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5H15.5C18.5376 20.5 21 18.0376 21 15C21 11.5 18 8.5 14.5 8.5V7.5C14.5 5.29086 12.7091 3.5 10.5 3.5H12ZM15.5 12.5C16.8807 12.5 18 13.6193 18 15C18 16.3807 16.8807 17.5 15.5 17.5H12C9.23858 17.5 7 15.2614 7 12.5C7 9.73858 9.23858 7.5 12 7.5H13.5V10C13.5 11.3807 14.6193 12.5 15.5 12.5Z" />
-                    </svg>
+                <div className="w-[28px] h-[28px] bg-transparent rounded-full flex items-center justify-center shrink-0">
+                    <img src="/logo.png" alt="FormHubs Logo" className="w-full h-full object-contain" />
                 </div>
-                <span className="font-bold text-[17px] tracking-tight">FORMHUBS</span>
+                <span className="font-bold text-[17px] tracking-tight">FormHubs</span>
             </div>
             
             <div className="flex flex-col items-center gap-2">
@@ -480,7 +476,7 @@ export default function LandingContent({ session, loginHref, startHref }: Landin
                 Made by <a href="https://biswajit.uivault.in" target="_blank" rel="noopener noreferrer" className="text-black font-bold hover:text-[#ccff00] transition-colors underline decoration-[#ccff00]/30 underline-offset-4">Biswajit Das</a> ❤️
               </div>
               <div className="text-[12px] text-gray-300 uppercase tracking-widest font-bold">
-                &copy; {new Date().getFullYear()} Formhubs. All rights reserved.
+                &copy; {new Date().getFullYear()} FormHubs. All rights reserved.
               </div>
             </div>
 

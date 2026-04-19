@@ -30,12 +30,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Topbar */}
       <div className="md:hidden flex items-center justify-between h-[60px] px-4 border-b border-gray-200 dark:border-[#1e1e21] bg-white dark:bg-[#050505] sticky top-0 z-30 transition-colors">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-[24px] h-[24px] bg-[#ccff00] rounded-full flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" className="w-[14px] h-[14px] fill-black" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5H15.5C18.5376 20.5 21 18.0376 21 15C21 11.5 18 8.5 14.5 8.5V7.5C14.5 5.29086 12.7091 3.5 10.5 3.5H12ZM15.5 12.5C16.8807 12.5 18 13.6193 18 15C18 16.3807 16.8807 17.5 15.5 17.5H12C9.23858 17.5 7 15.2614 7 12.5C7 9.73858 9.23858 7.5 12 7.5H13.5V10C13.5 11.3807 14.6193 12.5 15.5 12.5Z" />
-            </svg>
+          <div className="w-[24px] h-[24px] bg-transparent rounded-full flex items-center justify-center shrink-0">
+             <img src="/logo.png" alt="FormHubs Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="font-semibold text-[16px] tracking-tight">FORMHUBS</span>
+          <span className="font-semibold text-[16px] tracking-tight">FormHubs</span>
         </Link>
         <button onClick={() => setIsSidebarOpen(true)} className="text-gray-500 dark:text-[#a1a1aa] hover:text-black dark:hover:text-white transition-colors">
           <RiMenuLine className="w-6 h-6" />
@@ -54,13 +52,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className={`w-[260px] flex-shrink-0 border-r border-gray-200 dark:border-[#1e1e21] flex flex-col bg-white dark:bg-[#050505] fixed inset-y-0 left-0 z-50 transform transition-all duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="h-[72px] flex items-center justify-between px-6 border-b border-gray-200 dark:border-[#1e1e21]/60">
           <Link href="/" className="flex items-center gap-2.5" onClick={() => setIsSidebarOpen(false)}>
-            <div className="w-[28px] h-[28px] bg-[#ccff00] rounded-full flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 24 24" className="w-[16px] h-[16px] fill-black" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5H15.5C18.5376 20.5 21 18.0376 21 15C21 11.5 18 8.5 14.5 8.5V7.5C14.5 5.29086 12.7091 3.5 10.5 3.5H12ZM15.5 12.5C16.8807 12.5 18 13.6193 18 15C18 16.3807 16.8807 17.5 15.5 17.5H12C9.23858 17.5 7 15.2614 7 12.5C7 9.73858 9.23858 7.5 12 7.5H13.5V10C13.5 11.3807 14.6193 12.5 15.5 12.5Z" />
-                <circle cx="10" cy="10" r="1.5" fill="#ccff00" />
-              </svg>
+            <div className="w-[28px] h-[28px] bg-transparent rounded-full flex items-center justify-center shrink-0">
+               <img src="/logo.png" alt="FormHubs Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="font-semibold text-[17px] tracking-tight">FORMHUBS</span>
+            <span className="font-semibold text-[17px] tracking-tight">FormHubs</span>
           </Link>
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-gray-500 dark:text-[#a1a1aa] hover:text-black dark:hover:text-white">
              <RiCloseLine className="w-6 h-6" />

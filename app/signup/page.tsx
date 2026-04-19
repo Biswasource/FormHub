@@ -81,16 +81,13 @@ export default function SignupPage() {
       <div className="flex flex-col items-center justify-center w-full px-4 sm:px-12 lg:px-20 py-12 lg:py-0">
         <Card className="w-full max-w-[420px] bg-transparent border-none shadow-none ring-0">
           <CardHeader className="flex items-center flex-col pb-2">
-            <div className="w-[48px] h-[48px] bg-[#ccff00] rounded-full flex items-center justify-center shrink-0 mb-2">
-              <svg viewBox="0 0 24 24" className="w-[28px] h-[28px] fill-black" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 16.6944 7.30558 20.5 12 20.5H15.5C18.5376 20.5 21 18.0376 21 15C21 11.5 18 8.5 14.5 8.5V7.5C14.5 5.29086 12.7091 3.5 10.5 3.5H12ZM15.5 12.5C16.8807 12.5 18 13.6193 18 15C18 16.3807 16.8807 17.5 15.5 17.5H12C9.23858 17.5 7 15.2614 7 12.5C7 9.73858 9.23858 7.5 12 7.5H13.5V10C13.5 11.3807 14.6193 12.5 15.5 12.5Z" />
-                <circle cx="10" cy="10" r="1.5" fill="#ccff00" />
-              </svg>
+            <div className="w-[48px] h-[48px] bg-transparent rounded-full flex items-center justify-center shrink-0 mb-2">
+               <img src="/logo.png" alt="FormHubs Logo" className="w-full h-full object-contain" />
             </div>
             <CardTitle className="text-[28px] font-bold tracking-tight text-white m-0">Create an account</CardTitle>
             <br/>
             <CardDescription className="text-[15.5px] text-[#A1A1AA] m-0 text-center">
-              Sign up to continue to FORMHUBS Account
+              Sign up to continue to FormHubs Account
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5 mt-6">
@@ -226,7 +223,7 @@ export default function SignupPage() {
         <div className="w-full h-full relative rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800">
           <Image 
             src="/login-bg.png" 
-            alt="FORMHUBSLandscape" 
+            alt="Landing Background" 
             fill 
             className="object-cover relative z-10"
             priority

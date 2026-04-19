@@ -6,6 +6,7 @@ import { RiArrowLeftLine, RiExternalLinkLine } from "@remixicon/react"
 import { notFound, redirect } from "next/navigation"
 import { cookies } from "next/headers"
 import ExportCsvButton from "./ExportCsvButton"
+import SubmissionTable from "./SubmissionTable"
 
 export const dynamic = 'force-dynamic';
 
@@ -94,45 +95,11 @@ export default async function FormResponsesPage({ params }: { params: Promise<{ 
             <p className="text-[13px]">Share your public form link to start collecting data.</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-gray-200 dark:border-[#27272a] bg-white dark:bg-[#0a0a0a] overflow-hidden shadow-sm dark:shadow-none">
-          <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left border-collapse text-[13.5px]">
-               <thead>
-                 <tr className="border-b border-gray-200 dark:border-[#27272a] bg-gray-50 dark:bg-[#111113]">
-                   <th className="p-4 font-semibold whitespace-nowrap min-w-[200px]">Submitted Date</th>
-                   {dataFields.map((field: any) => (
-                      <th key={field.id} className="p-4 font-semibold whitespace-nowrap min-w-[200px]">
-                        {field.label || field.type.toUpperCase()}
-                      </th>
-                   ))}
-                 </tr>
-               </thead>
-               <tbody className="divide-y divide-gray-100 dark:divide-[#1e1e21]">
-                 {submissions.map((sub: any) => (
-                    <tr key={sub._id} className="hover:bg-gray-50 dark:hover:bg-[#18181b]/50 transition-colors group">
-                       <td className="p-4 text-gray-500 dark:text-[#a1a1aa] whitespace-nowrap">
-                           {new Date(sub.submittedAt).toLocaleString(undefined, {
-                             month: 'short', day: 'numeric', year: 'numeric',
-                             hour: 'numeric', minute: '2-digit'
-                           })}
-                       </td>
-                       {dataFields.map((field: any) => {
-                          let val = sub.answers[field.id];
-                          if (val === true || val === 'checked') val = "Yes";
-                          if (val === false) val = "No";
-                          
-                          return (
-                            <td key={field.id} className="p-4 whitespace-pre-wrap max-w-[300px] truncate group-hover:text-green-700 dark:group-hover:text-[#ccff00] transition-colors">
-                               {val !== undefined && val !== null && val !== "" ? String(val) : <span className="text-gray-400 dark:text-[#52525b] italic">Empty</span>}
-                            </td>
-                          )
-                       })}
-                    </tr>
-                 ))}
-               </tbody>
-            </table>
-          </div>
-        </div>
+        <SubmissionTable 
+          initialSubmissions={submissions} 
+          dataFields={dataFields} 
+          formId={form._id} 
+        />
       )}
     </div>
   )
