@@ -12,7 +12,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Unauthorized. Please login first.' }, { status: 401 });
     }
 
-    const { title, description, fields, isHeadless } = await req.json();
+    const { title, description, fields, isHeadless, formType, steps, theme } = await req.json();
 
     if (!isHeadless && (!fields || !Array.isArray(fields) || fields.length === 0)) {
       return NextResponse.json({ error: 'Form must have at least one field.' }, { status: 400 });
@@ -25,6 +25,9 @@ export async function POST(req: Request) {
       title: title || 'Untitled Endpoint',
       description: description || '',
       isHeadless: isHeadless || false,
+      formType: formType || 'single',
+      steps: steps || [],
+      theme: theme || 'dark',
       fields: fields || []
     });
 

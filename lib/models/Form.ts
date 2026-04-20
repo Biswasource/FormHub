@@ -21,13 +21,21 @@ const FieldSchema = new Schema({
   // option selection specific
   options: [String],
   sliderMin: { type: Number, default: 0 },
-  sliderMax: { type: Number, default: 100 }
+  sliderMax: { type: Number, default: 100 },
+  stepId: { type: String, default: 'default' }
+});
+
+const StepSchema = new Schema({
+  id: String,
+  label: String
 });
 
 const FormSchema = new Schema({
   userId: { type: String }, // Enables isolated multi-tenant mapping
   title: { type: String, default: 'Untitled Form' },
   description: String,
+  formType: { type: String, default: 'single', enum: ['single', 'multi'] },
+  steps: [StepSchema],
   theme: { type: String, default: 'dark', enum: ['dark', 'light'] },
   fields: [FieldSchema],
   createdAt: { type: Date, default: Date.now },

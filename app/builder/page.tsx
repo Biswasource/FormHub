@@ -11,6 +11,9 @@ import {
 } from "@remixicon/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Reorder, AnimatePresence } from "framer-motion"
+import FormTypeModal from "@/components/builder/FormTypeModal"
+import ClientForm from "@/app/f/[id]/ClientForm"
 
 // Field Definitions Data
 const fieldCategories = [
@@ -70,12 +73,47 @@ export default function FormBuilder() {
   const [activeTab, setActiveTab] = useState<'fields' | 'canvas' | 'settings'>('canvas')
   const [searchQuery, setSearchQuery] = useState("")
 
-  const [title, setTitle] = useState("FORMHUBSDemo Form")
+  const [title, setTitle] = useState("FORMHUBS Demo Form")
   const [description, setDescription] = useState("Try building a powerful form with our builder!")
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
   
   const [isSaving, setIsSaving] = useState(false)
   const [savedFormLink, setSavedFormLink] = useState("")
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+
+  const [isTypeModalOpen, setIsTypeModalOpen] = useState(true)
+  const [formType, setFormType] = useState<'single' | 'multi'>('single')
+
+  // Step Management State
+  const [steps, setSteps] = useState<any[]>([
+    { id: 'step_1', label: 'Step 1: Introduction' }
+  ])
+  const [activeStepId, setActiveStepId] = useState<string>('step_1')
+
+  const handleModalClose = (config: { type: 'single' | 'multi', title: string, description: string }) => {
+    setFormType(config.type)
+    setTitle(config.title || "Untitled Form")
+    setDescription(config.description || "")
+    setIsTypeModalOpen(false)
+  }
+
+  const addStep = () => {
+    const newStep = {
+      id: `step_${Date.now()}`,
+      label: `Step ${steps.length + 1}: New Step`
+    }
+    setSteps([...steps, newStep])
+    setActiveStepId(newStep.id)
+  }
+
+  const removeStep = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (steps.length === 1) return alert("Forms must have at least one step.")
+    const newSteps = steps.filter(s => s.id !== id)
+    setSteps(newSteps)
+    setFields(fields.filter(f => f.stepId !== id))
+    if (activeStepId === id) setActiveStepId(newSteps[0].id)
+  }
 
   const handleSaveForm = async () => {
     if (fields.length === 0) return alert("Please add at least one field before saving!");
@@ -84,7 +122,7 @@ export default function FormBuilder() {
         const response = await fetch('/api/forms', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, description, fields, theme })
+            body: JSON.stringify({ title, description, fields, theme, formType, steps })
         });
         const data = await response.json();
         if (response.ok) {
@@ -114,11 +152,17 @@ export default function FormBuilder() {
       options,
       sliderMin: item.type === 'slider' ? 0 : undefined,
       sliderMax: item.type === 'slider' ? 100 : undefined,
-      iconType: item.type 
+      iconType: item.type,
+      stepId: formType === 'multi' ? activeStepId : 'default'
     };
     setFields([...fields, newField]);
     setActiveFieldId(newField.id);
   }
+
+  // Filter fields based on active step for multi-step
+  const visibleFields = formType === 'multi' 
+    ? fields.filter(f => f.stepId === activeStepId) 
+    : fields;
 
   const removeField = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -129,6 +173,10 @@ export default function FormBuilder() {
   const updateActiveField = (key: string, value: any) => {
     if (!activeFieldId) return;
     setFields(fields.map(f => f.id === activeFieldId ? { ...f, [key]: value } : f));
+  }
+
+  const updateStepLabel = (id: string, label: string) => {
+    setSteps(steps.map(s => s.id === id ? { ...s, label } : s))
   }
 
   const activeField = fields.find(f => f.id === activeFieldId);
@@ -144,6 +192,10 @@ export default function FormBuilder() {
 
   return (
     <div className={`h-[100dvh] w-full overflow-hidden flex flex-col selection:bg-[#ccff00] selection:text-black font-sans transition-colors duration-200 ${theme === 'light' ? 'bg-[#f4f4f5] text-black' : 'bg-[#0a0a0a] text-white'}`}>
+      <FormTypeModal 
+        isOpen={isTypeModalOpen} 
+        onClose={handleModalClose} 
+      />
       {/* Top Navigation Bar */}
       <header className={`h-[64px] border-b flex items-center justify-between px-4 shrink-0 z-50 transition-colors ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-[#0a0a0a] border-[#1e1e21]'}`}>
         <div className="flex items-center gap-2 sm:gap-4">
@@ -166,7 +218,11 @@ export default function FormBuilder() {
             {theme === 'dark' ? <RiSunLine className="w-[16px] h-[16px]" /> : <RiMoonLine className="w-[16px] h-[16px]" />}
           </Button>
           <div className={`w-[1px] h-4 mx-1 hidden md:block ${theme === 'light' ? 'bg-gray-200' : 'bg-[#27272a]'}`}></div>
-          <Button variant="outline" className={`h-9 w-9 sm:w-auto sm:px-3 rounded-md shadow-sm flex items-center justify-center p-0 sm:p-auto ${theme === 'light' ? 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-black' : 'bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#18181b]'}`}>
+          <Button 
+            onClick={() => setIsPreviewOpen(true)}
+            variant="outline" 
+            className={`h-9 w-9 sm:w-auto sm:px-3 rounded-md shadow-sm flex items-center justify-center p-0 sm:p-auto ${theme === 'light' ? 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-black' : 'bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] hover:text-white hover:bg-[#18181b]'}`}
+          >
             <RiEyeLine className="w-[16px] h-[16px]" />
             <span className="hidden sm:ml-1.5 sm:inline">Preview</span>
           </Button>
@@ -189,6 +245,87 @@ export default function FormBuilder() {
             </button>
           </div>
           <div className={`p-4 border-b shrink-0 ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+            {formType === 'multi' && (
+              <div className="mb-6">
+                <div className="text-[11px] font-bold text-[#52525b] uppercase tracking-widest mb-3 flex items-center justify-between">
+                  <span>Step Management</span>
+                  <button onClick={addStep} className="text-[#ccff00] hover:underline text-[10px] flex items-center gap-1">
+                    <RiAddLine className="w-3 h-3" /> Add Step
+                  </button>
+                </div>
+                <Reorder.Group axis="y" values={steps} onReorder={setSteps} className="space-y-2">
+                  <AnimatePresence initial={false}>
+                    {steps.map((step) => {
+                      const stepFields = fields.filter(f => f.stepId === step.id);
+                      return (
+                        <Reorder.Item 
+                          key={step.id} 
+                          value={step}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          onClick={() => setActiveStepId(step.id)}
+                          className={`group p-2 rounded-lg border cursor-pointer transition-all ${
+                            activeStepId === step.id 
+                              ? (theme === 'light' ? 'bg-[#ccff00]/10 border-[#ccff00] shadow-sm' : 'bg-[#ccff00]/5 border-[#ccff00]/40 shadow-sm')
+                              : (theme === 'light' ? 'bg-white border-gray-200 hover:border-gray-300' : 'bg-[#111113] border-[#27272a] hover:border-[#3f3f46]')
+                          }`}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2 flex-1">
+                                <RiDragMove2Fill className="w-3.5 h-3.5 text-gray-500 cursor-grab" />
+                                <input 
+                                  value={step.label}
+                                  onChange={(e) => updateStepLabel(step.id, e.target.value)}
+                                  className="bg-transparent border-none outline-none text-[12px] font-bold text-white w-full p-0 focus:ring-0"
+                                />
+                              </div>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-black/40 text-gray-400">
+                                  {stepFields.length}
+                                </span>
+                                {steps.length > 1 && (
+                                  <button 
+                                    onClick={(e) => removeStep(step.id, e)}
+                                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-500/10 rounded transition-all"
+                                  >
+                                    <RiDeleteBinLine className="w-3.5 h-3.5 text-red-500" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Nested Fields List */}
+                            {activeStepId === step.id && stepFields.length > 0 && (
+                              <div className="pl-5 space-y-1 mt-1 border-l border-white/5 mx-1">
+                                {stepFields.map((field) => (
+                                  <div 
+                                    key={field.id}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveFieldId(field.id);
+                                    }}
+                                    className={`flex items-center gap-2 p-1.5 rounded-md text-[11px] transition-colors ${
+                                      activeFieldId === field.id 
+                                        ? 'bg-[#ccff00]/20 text-[#ccff00] font-bold' 
+                                        : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
+                                    }`}
+                                  >
+                                    <span className="w-1.5 h-1.5 rounded-full bg-current opacity-40 shrink-0" />
+                                    <span className="truncate">{field.label || "Untitled Field"}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </Reorder.Item>
+                      )
+                    })}
+                  </AnimatePresence>
+                </Reorder.Group>
+              </div>
+            )}
             <div className="relative">
               <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 w-[16px] h-[16px] text-[#71717a]" />
               <Input 
@@ -232,6 +369,11 @@ export default function FormBuilder() {
         <section className={`flex-1 overflow-y-auto w-full relative transition-colors pb-20 lg:pb-0 ${theme === 'light' ? 'bg-[#f4f4f5]' : 'bg-[#0a0a0a]'} ${activeTab !== 'canvas' ? 'hidden lg:block' : 'block'}`}>
           <div className="max-w-[700px] mx-auto py-8 sm:py-12 px-4 sm:px-6">
             <div className="mb-8 sm:mb-10 group">
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${theme === 'light' ? 'bg-black text-white' : 'bg-[#ccff00] text-black'}`}>
+                  {formType === 'single' ? 'Single Page' : 'Multi-Step Form'}
+                </span>
+              </div>
               <input 
                 type="text" 
                 value={title}
@@ -249,14 +391,14 @@ export default function FormBuilder() {
             </div>
 
             <div className="space-y-4">
-              {fields.length === 0 ? (
+              {visibleFields.length === 0 ? (
                 <div className={`w-full p-12 border border-dashed rounded-xl flex flex-col items-center justify-center text-[#71717a] ${theme === 'light' ? 'bg-white border-gray-300' : 'bg-[#050505] border-[#27272a]'}`}>
                    <RiAddLine className="w-[32px] h-[32px] mb-3 text-[#52525b]" />
-                   <p className={`text-[14.5px] font-medium mb-1 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Your form is empty</p>
-                   <p className="text-[13px]">Click any field on the left sidebar to add it here.</p>
+                   <p className={`text-[14.5px] font-medium mb-1 ${theme === 'light' ? 'text-black' : 'text-white'}`}>This step is empty</p>
+                   <p className="text-[13px]">Add some fields to this step from the left sidebar.</p>
                 </div>
               ) : (
-                fields.map((field) => (
+                visibleFields.map((field) => (
                   <div 
                     key={field.id}
                     onClick={() => {
@@ -681,6 +823,42 @@ export default function FormBuilder() {
                 </Button>
              </Link>
           </div>
+        </div>
+      )}
+
+      {/* Preview Modal Overlay */}
+      {isPreviewOpen && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[100] flex flex-col overflow-y-auto custom-scrollbar">
+           <div className="h-[64px] border-b border-white/10 flex items-center justify-between px-6 shrink-0 bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-[110]">
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-lg bg-[#ccff00] flex items-center justify-center text-black font-black text-xs shadow-[0_0_15px_rgba(204,255,0,0.3)]">
+                    LIVE
+                 </div>
+                 <h2 className="text-white font-bold tracking-tight uppercase text-sm">Form Preview</h2>
+              </div>
+              <Button 
+                onClick={() => setIsPreviewOpen(false)}
+                variant="ghost" 
+                className="h-10 px-4 text-white hover:bg-white/10 gap-2 font-bold uppercase text-xs tracking-widest"
+              >
+                <RiCloseLine className="w-4 h-4" /> Close Preview
+              </Button>
+           </div>
+           
+           <div className="flex-1 w-full flex items-center justify-center p-4 py-12">
+              <div className="w-full max-w-[700px]">
+                 <ClientForm 
+                    form={{
+                       title,
+                       description,
+                       fields,
+                       theme,
+                       formType,
+                       steps
+                    }}
+                 />
+              </div>
+           </div>
         </div>
       )}
 
