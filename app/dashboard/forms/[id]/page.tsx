@@ -29,23 +29,38 @@ export default async function FormResponsesPage({ params }: { params: Promise<{ 
   const rawSubmissions = await Submission.find({ formId: resolvedParams.id }).sort({ submittedAt: -1 });
   const submissions = JSON.parse(JSON.stringify(rawSubmissions));
 
-  let dataFields: any[] = [];
-  
-  if (form.isHeadless || !form.fields || form.fields.length === 0) {
-      // Scrape Headless arbitrary payload keys structurally
-      const keySet = new Set<string>();
-      submissions.forEach((sub: any) => {
-          if(sub.answers) Object.keys(sub.answers).forEach(k => keySet.add(k));
-      });
-      dataFields = Array.from(keySet).map(key => ({
-          id: key,
-          label: key.charAt(0).toUpperCase() + key.slice(1).replace(/[_]/g, ' '),
-          type: 'text'
-      }));
-  } else {
-      // Skip statement and banner types which have no data
-      dataFields = form.fields.filter((f: any) => !['statement', 'banner'].includes(f.type));
-  }
+  // 1. Start with fields defined in the form (excluding decorators like banners)
+  let dataFields: any[] = (form.fields || [])
+    .filter((f: any) => !['statement', 'banner'].includes(f.type))
+    .map((f: any) => ({
+       id: f.id,
+       label: f.label || f.type.toUpperCase(),
+       type: f.type
+    }));
+
+  // 2. Scrape submissions for any keys NOT in the form definition (historical or API-driven data)
+  const existingIds = new Set(dataFields.map(f => f.id));
+  const discoveredFields: any[] = [];
+  const keySet = new Set<string>();
+
+  submissions.forEach((sub: any) => {
+    if (sub.answers && typeof sub.answers === 'object') {
+       Object.keys(sub.answers).forEach(key => {
+          if (!existingIds.has(key) && !keySet.has(key)) {
+             keySet.add(key);
+             discoveredFields.push({
+                id: key,
+                label: key.charAt(0).toUpperCase() + key.slice(1).replace(/[_]/g, ' '),
+                type: 'text',
+                isDiscovered: true
+             });
+          }
+       });
+    }
+  });
+
+  // 3. Merge discovered fields into dataFields
+  dataFields = [...dataFields, ...discoveredFields];
 
   // Compute arrays uniquely for Client Side Blob injection
   const csvHeaders = ["Submitted Date", ...dataFields.map((f: any) => f.label || f.type.toUpperCase())];

@@ -21,6 +21,7 @@ export default function ClientForm({ form }: { form: any }) {
 
   // State for complex inputs (Date)
   const [dates, setDates] = useState<Record<string, Date | undefined>>({});
+  const [responses, setResponses] = useState<Record<string, any>>({});
 
   const steps = isMultiStep ? form.steps : [{ id: 'default', label: form.title }];
   const currentStep = steps[currentStepIndex];
@@ -31,6 +32,26 @@ export default function ClientForm({ form }: { form: any }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Scrape current step data
+    const formData = new FormData(e.currentTarget);
+    const stepAnswers: Record<string, any> = {};
+    
+    visibleFields.forEach((field: any) => {
+       if (['statement', 'banner', 'file', 'signature'].includes(field.type)) return;
+       if (field.type === 'checkbox') {
+           const allChecked = formData.getAll(field.id);
+           stepAnswers[field.id] = allChecked.length > 0 ? allChecked.join(', ') : "";
+       } else if (field.type === 'date') {
+           stepAnswers[field.id] = dates[field.id] ? format(dates[field.id]!, "PPP") : "";
+       } else {
+           stepAnswers[field.id] = formData.get(field.id);
+       }
+    });
+
+    const finalAnswers = { ...responses, ...stepAnswers };
+    setResponses(finalAnswers);
+
     if (isMultiStep && currentStepIndex < steps.length - 1) {
        setCurrentStepIndex(currentStepIndex + 1);
        window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -39,24 +60,10 @@ export default function ClientForm({ form }: { form: any }) {
 
     setIsSubmitting(true);
     try {
-      const formData = new FormData(e.currentTarget);
-      const answers: Record<string, any> = {};
-      form.fields.forEach((field: any) => {
-         if (['statement', 'banner', 'file', 'signature'].includes(field.type)) return;
-         if (field.type === 'checkbox') {
-             const allChecked = formData.getAll(field.id);
-             answers[field.id] = allChecked.length > 0 ? allChecked.join(', ') : "";
-         } else if (field.type === 'date') {
-             answers[field.id] = dates[field.id] ? format(dates[field.id]!, "PPP") : "";
-         } else {
-             answers[field.id] = formData.get(field.id);
-         }
-      });
-
       const res = await fetch('/api/submissions', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ formId: form._id, answers })
+          body: JSON.stringify({ formId: form._id, answers: finalAnswers })
       });
       if (res.ok) setIsSuccess(true);
       else alert("Something went wrong");
@@ -97,20 +104,20 @@ export default function ClientForm({ form }: { form: any }) {
 
   return (
     <div className={cn(
-      "min-h-screen flex flex-col items-center p-4 py-5 pt-10 font-sans selection:bg-[#ccff00] transition-colors duration-500 border-none",
-      isLight ? "bg-[#f4f4f7] text-black" : "dark bg-[#050505] text-white"
+      "min-h-screen flex flex-col items-center justify-center p-4 py-5 pt-10 font-sans selection:bg-[#ccff00] transition-colors duration-500 border-none",
+      isLight ? "bg-white text-black" : "dark bg-[#050505] text-white"
     )}>
       
-      <div className="w-full max-w-[550px] space-y-3 relative z-[10] border-none">
+      <div className="w-full max-w-[550px] space-y-2 relative z-[10] border-none">
         
         {/* Compact Progress Indicator */}
         {isMultiStep && (
           <div className="space-y-2.5 px-1">
              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#ccff00]">Step {currentStepIndex + 1} / {steps.length}</span>
-                <span className="text-[11px] font-medium opacity-40">{Math.round(((currentStepIndex + 1) / steps.length) * 100)}% Complete</span>
+                <span className={cn("text-[11px] font-bold uppercase tracking-wider", isLight ? "text-[#88aa00]" : "text-[#ccff00]")}>Step {currentStepIndex + 1} / {steps.length}</span>
+                <span className={cn("text-[11px] font-medium", isLight ? "opacity-60" : "opacity-40")}>{Math.round(((currentStepIndex + 1) / steps.length) * 100)}% Complete</span>
              </div>
-             <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+             <div className={`w-full h-1.5 rounded-full overflow-hidden ${isLight ? "bg-black/5" : "bg-white/5"}`}>
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${((currentStepIndex + 1) / steps.length) * 100}%` }}
@@ -121,11 +128,11 @@ export default function ClientForm({ form }: { form: any }) {
         )}
 
         <Card className={cn(
-          "w-full border-none shadow-none overflow-hidden",
-          isLight ? "bg-white text-black" : "bg-transparent text-white"
+          "w-full border-none shadow-none ring-0 overflow-hidden",
+          isLight ? "bg-white text-black border-none shadow-none" : "bg-transparent text-white"
         )}>
           <CardHeader className={cn(
-            "p-3 sm:p-4 pb-0",
+            "p-3 sm:p- pb-0",
             isLight ? "bg-white" : ""
           )}>
             <motion.div 
@@ -135,14 +142,14 @@ export default function ClientForm({ form }: { form: any }) {
               className="space-y-2"
             >
               <CardTitle className={cn(
-                "text-2xl sm:text-3xl font-bold tracking-tight",
+                "text-xl sm:text-xl font-bold tracking-tight",
                 isLight ? "text-black" : "text-white"
               )}>
                 {isMultiStep ? currentStep.label : form.title}
               </CardTitle>
               {(form.description && (currentStepIndex === 0 || !isMultiStep)) && (
                 <CardDescription className={cn(
-                  "text-[14.5px] leading-relaxed",
+                  "text-[12.5px] leading-relaxed",
                   isLight ? "text-gray-500" : "text-[#a1a1aa]"
                 )}>
                   {form.description}
@@ -155,7 +162,7 @@ export default function ClientForm({ form }: { form: any }) {
             "p-3 sm:p-3",
             isLight ? "bg-white" : "bg-[#050505]"
           )}>
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-2">
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={currentStepIndex}
@@ -169,8 +176,8 @@ export default function ClientForm({ form }: { form: any }) {
                     <div key={field.id} className="space-y-2">
                       {field.type === 'statement' ? (
                         <div className="py-2">
-                          <h3 className="text-lg font-bold text-white">{field.label || 'Statement'}</h3>
-                          {field.description && <p className="text-[13.5px] mt-1 opacity-60 text-white">{field.description}</p>}
+                          <h3 className={cn("text-lg font-bold", isLight ? "text-black" : "text-white")}>{field.label || 'Statement'}</h3>
+                          {field.description && <p className={cn("text-[13.5px] mt-1 opacity-60", isLight ? "text-black" : "text-white")}>{field.description}</p>}
                         </div>
                       ) : field.type === 'banner' ? (
                         <div className={cn(
@@ -182,7 +189,10 @@ export default function ClientForm({ form }: { form: any }) {
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          <Label className="text-[14px] font-semibold text-gray-400 dark:text-[#52525b] uppercase tracking-wider">
+                          <Label className={cn(
+                            "text-[12px] font-semibold uppercase tracking-wider",
+                            isLight ? "text-gray-600" : "text-[#52525b]"
+                          )}>
                             {field.label} {field.required && <span className="text-red-500 ml-0.5">*</span>}
                           </Label>
 
@@ -190,11 +200,12 @@ export default function ClientForm({ form }: { form: any }) {
                           {['text', 'email', 'phone', 'url', 'number', 'address'].includes(field.type) && (
                             <Input
                               name={field.id}
+                              defaultValue={responses[field.id] || ""}
                               type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : 'text'}
                               placeholder={field.placeholder || "Your answer..."}
                               required={field.required}
                               className={cn(
-                                "h-11 rounded-xl border focus-visible:ring-2 transition-all",
+                                "h-9 rounded-xl border focus-visible:ring-2 transition-all",
                                 isLight ? "bg-white border-gray-200 text-black" : "bg-[#111113] border-[#1e1e21] text-white"
                               )}
                             />
@@ -240,6 +251,7 @@ export default function ClientForm({ form }: { form: any }) {
                                <RiTimeLine className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 opacity-40 z-10 pointer-events-none group-focus-within:text-[#ccff00] transition-colors" />
                                <Input
                                  name={field.id}
+                                 defaultValue={responses[field.id] || ""}
                                  type="time"
                                  placeholder={field.placeholder || "Select time"}
                                  required={field.required}
@@ -254,6 +266,7 @@ export default function ClientForm({ form }: { form: any }) {
                           {field.type === 'textarea' && (
                             <textarea
                               name={field.id}
+                              defaultValue={responses[field.id] || ""}
                               placeholder={field.placeholder || "Type here..."}
                               required={field.required}
                               className={cn(
@@ -270,7 +283,7 @@ export default function ClientForm({ form }: { form: any }) {
                                    "flex items-center gap-3 p-3.5 rounded-xl border cursor-pointer transition-all hover:bg-[#ccff00]/5",
                                    isLight ? "bg-white border-gray-100 text-black" : "bg-[#111113] border-[#1e1e21] text-white"
                                  )}>
-                                    <input type={field.type} name={field.id} value={opt} className="w-4 h-4 accent-[#ccff00]" required={field.type === 'radio' ? field.required : false} />
+                                    <input type={field.type} name={field.id} value={opt} defaultChecked={responses[field.id]?.includes(opt)} className="w-4 h-4 accent-[#ccff00]" required={field.type === 'radio' ? field.required : false} />
                                     <span className="text-[14.5px] font-medium">{opt}</span>
                                  </label>
                                ))}
@@ -278,11 +291,11 @@ export default function ClientForm({ form }: { form: any }) {
                           )}
 
                           {['dropdown', 'poll'].includes(field.type) && (
-                            <select name={field.id} required={field.required} className={cn(
+                            <select name={field.id} defaultValue={responses[field.id] || ""} required={field.required} className={cn(
                               "w-full rounded-xl p-3 h-12 text-[15px] focus:outline-none focus:ring-2 focus:ring-[#ccff00] border appearance-none transition-all",
                               isLight ? "bg-white border-gray-200 text-black" : "bg-[#111113] border-[#1e1e21] text-white"
                             )}>
-                               <option value="" disabled selected className={isLight ? "text-black" : "text-white bg-[#0a0a0a]"}>Select an option</option>
+                               <option value="" disabled className={isLight ? "text-black" : "text-white bg-[#0a0a0a]"}>Select an option</option>
                                {(field.options || ['Option 1']).map((opt: string, i: number) => (
                                    <option key={i} value={opt} className={isLight ? "text-black" : "text-white bg-[#0a0a0a]"}>{opt}</option>
                                ))}
@@ -291,8 +304,8 @@ export default function ClientForm({ form }: { form: any }) {
 
                           {field.type === 'slider' && (
                              <div className="space-y-4 pt-2">
-                               <input type="range" name={field.id} min={field.sliderMin || 0} max={field.sliderMax || 100} className="w-full accent-[#ccff00] h-2 bg-gray-200 dark:bg-white/5 rounded-full cursor-pointer" required={field.required} />
-                               <div className="flex justify-between text-[11px] font-bold opacity-30 uppercase tracking-widest text-white">
+                               <input type="range" name={field.id} defaultValue={responses[field.id] || field.sliderMin || 0} min={field.sliderMin || 0} max={field.sliderMax || 100} className="w-full accent-[#ccff00] h-2 bg-gray-200 dark:bg-white/5 rounded-full cursor-pointer" required={field.required} />
+                               <div className={cn("flex justify-between text-[11px] font-bold opacity-30 uppercase tracking-widest", isLight ? "text-black" : "text-white")}>
                                  <span>{field.sliderMin || 0}</span>
                                  <span>{field.sliderMax || 100}</span>
                                </div>
@@ -300,25 +313,31 @@ export default function ClientForm({ form }: { form: any }) {
                           )}
 
                           {field.type === 'rating' && (
-                             <div className="flex items-center gap-2 mt-2 text-white">
-                                 <input type="hidden" name={field.id} id={`rating_${field.id}`} value="" />
-                                 {[1,2,3,4,5].map(i => (
-                                   <RiStarLine 
-                                     key={i} 
-                                     onClick={(e) => {
-                                        const el = document.getElementById(`rating_${field.id}`) as HTMLInputElement;
-                                        if(el) el.value = String(i);
-                                        const parent = e.currentTarget.parentElement;
-                                        if (parent) {
-                                            Array.from(parent.children).forEach((child, index) => {
-                                                if(index > 0 && index <= i) child.classList.add('text-[#ccff00]');
-                                                else if(index > 0) child.classList.remove('text-[#ccff00]');
-                                            });
-                                        }
-                                     }} 
-                                     className="w-10 h-10 text-gray-300 dark:text-gray-800 cursor-pointer transition-colors hover:text-[#ccff00]" 
-                                   />
-                                 ))}
+                             <div className="flex items-center gap-2 mt-2">
+                                 <input type="hidden" name={field.id} id={`rating_${field.id}`} defaultValue={responses[field.id] || ""} />
+                                 {[1,2,3,4,5].map(i => {
+                                   const currentRating = Number(responses[field.id] || 0);
+                                   return (
+                                     <RiStarLine 
+                                       key={i} 
+                                       onClick={(e) => {
+                                          const el = document.getElementById(`rating_${field.id}`) as HTMLInputElement;
+                                          if(el) el.value = String(i);
+                                          const parent = e.currentTarget.parentElement;
+                                          if (parent) {
+                                              Array.from(parent.children).forEach((child, index) => {
+                                                  if(index > 0 && index <= i) child.classList.add('text-[#ccff00]');
+                                                  else if(index > 0) child.classList.remove('text-[#ccff00]');
+                                              });
+                                          }
+                                       }} 
+                                       className={cn(
+                                          "w-10 h-10 cursor-pointer transition-colors hover:text-[#ccff00]",
+                                          i <= currentRating ? "text-[#ccff00]" : "text-gray-300 dark:text-gray-800"
+                                       )} 
+                                     />
+                                   );
+                                 })}
                              </div>
                           )}
 
@@ -333,7 +352,7 @@ export default function ClientForm({ form }: { form: any }) {
                           )}
 
                           {field.description && (
-                            <p className="text-[12.5px] opacity-40 font-medium ml-1 text-white">{field.description}</p>
+                            <p className={cn("text-[12.5px] font-medium ml-1", isLight ? "text-black/60" : "text-white/40")}>{field.description}</p>
                           )}
                         </div>
                       )}
@@ -348,7 +367,10 @@ export default function ClientForm({ form }: { form: any }) {
                     type="button" 
                     onClick={() => setCurrentStepIndex(currentStepIndex - 1)}
                     variant="ghost" 
-                    className="h-12 px-6 rounded-xl font-bold flex items-center gap-2 opacity-100 hover:opacity-100 transition-all text-white"
+                    className={cn(
+                      "h-12 px-6 rounded-xl font-bold flex items-center gap-2 opacity-100 hover:opacity-100 transition-all",
+                      isLight ? "text-gray-600 hover:bg-gray-100" : "text-white hover:bg-white/5"
+                    )}
                    >
                      <RiArrowLeftSLine className="w-5 h-5" /> Back
                    </Button>
@@ -357,7 +379,7 @@ export default function ClientForm({ form }: { form: any }) {
                 <Button 
                   disabled={isSubmitting} 
                   type="submit" 
-                  className="flex-1 h-11 rounded-xl bg-[#ccff00] text-black hover:bg-[#bdeb02] font-black uppercase text-[14px] tracking-widest shadow-xl shadow-[#ccff00]/10 transition-all active:scale-[0.98]"
+                  className="flex-1 h-11 rounded-xl bg-[#ccff00] text-black hover:bg-[#bdeb02] font-black uppercase text-[12px] tracking-widest  transition-all active:scale-[0.95]"
                 >
                   {isSubmitting ? (
                     "Sending..."
@@ -373,10 +395,10 @@ export default function ClientForm({ form }: { form: any }) {
           </CardContent>
 
           <CardFooter className={cn(
-            "p-4 flex justify-center border-t",
-            isLight ? "border-gray-100 bg-black" : "border-[#1e1e21] bg-black"
+            "p-2 flex justify-center border-t",
+            isLight ? "border-gray-100 bg-white" : "border-[#1e1e21] bg-black"
           )}>
-            <p className={cn("text-[10px] font-black uppercase tracking-[0.3em]", isLight ? "text-gray-300" : "text-white")}>
+            <p className={cn("text-[10px] font-black uppercase tracking-[0.3em]", isLight ? "text-gray-500" : "text-white/40")}>
               Powered by <span className="text-[#ccff00]">FormHubs</span>
             </p>
           </CardFooter>

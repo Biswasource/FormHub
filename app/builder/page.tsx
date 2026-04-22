@@ -85,6 +85,7 @@ export default function FormBuilder() {
   const [formType, setFormType] = useState<'single' | 'multi'>('single')
 
   // Step Management State
+  const [sidebarTab, setSidebarTab] = useState<'fields' | 'steps'>('fields')
   const [steps, setSteps] = useState<any[]>([
     { id: 'step_1', label: 'Step 1: Introduction' }
   ])
@@ -235,35 +236,63 @@ export default function FormBuilder() {
       <main className="flex flex-1 overflow-hidden">
         {/* Left Sidebar: Components */}
         <aside className={`fixed inset-y-0 left-0 z-40 w-[280px] border-r flex flex-col shrink-0 custom-scrollbar transition-all duration-300 lg:relative lg:translate-x-0 ${activeTab === 'fields' ? 'translate-x-0' : '-translate-x-full'} ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-[#050505] border-[#1e1e21]'}`}>
-          <div className={`p-4 border-b shrink-0 flex items-center justify-between ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
-            <div>
-              <h2 className={`text-[15px] font-semibold mb-1 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Form Fields</h2>
-              <p className="text-[13px] text-[#71717a]">Click to add fields to your form</p>
-            </div>
-            <button onClick={() => setActiveTab('canvas')} className="lg:hidden text-[#71717a] hover:text-white p-1">
-              <RiCloseLine className="w-5 h-5" />
-            </button>
-          </div>
           <div className={`p-4 border-b shrink-0 ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className={`text-[15px] font-semibold mb-0.5 ${theme === 'light' ? 'text-black' : 'text-white'}`}>Builder</h2>
+                <p className="text-[12px] text-[#71717a]">Build & manage your form</p>
+              </div>
+              <button onClick={() => setActiveTab('canvas')} className="lg:hidden text-[#71717a] hover:text-white p-1">
+                <RiCloseLine className="w-5 h-5" />
+              </button>
+            </div>
+
             {formType === 'multi' && (
-              <div className="mb-6">
-                <div className="text-[11px] font-bold text-[#52525b] uppercase tracking-widest mb-3 flex items-center justify-between">
-                  <span>Step Management</span>
-                  <button onClick={addStep} className="text-[#ccff00] hover:underline text-[10px] flex items-center gap-1">
-                    <RiAddLine className="w-3 h-3" /> Add Step
-                  </button>
-                </div>
-                <Reorder.Group axis="y" values={steps} onReorder={setSteps} className="space-y-2">
-                  <AnimatePresence initial={false}>
+              <div className={`flex p-1 rounded-lg mb-2 ${theme === 'light' ? 'bg-gray-100' : 'bg-[#111113]'}`}>
+                <button 
+                  onClick={() => setSidebarTab('fields')}
+                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-md transition-all ${
+                    sidebarTab === 'fields' 
+                      ? (theme === 'light' ? 'bg-white text-black shadow-sm' : 'bg-[#1e1e21] text-white shadow-sm shadow-black/20')
+                      : 'text-[#71717a] hover:text-gray-400'
+                  }`}
+                >
+                  Fields
+                </button>
+                <button 
+                  onClick={() => setSidebarTab('steps')}
+                  className={`flex-1 py-1.5 text-[12px] font-medium rounded-md transition-all ${
+                    sidebarTab === 'steps' 
+                      ? (theme === 'light' ? 'bg-white text-black shadow-sm' : 'bg-[#1e1e21] text-white shadow-sm shadow-black/20')
+                      : 'text-[#71717a] hover:text-gray-400'
+                  }`}
+                >
+                  Steps
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex-1 overflow-hidden flex flex-col">
+            <AnimatePresence mode="wait">
+              {sidebarTab === 'steps' && formType === 'multi' ? (
+                <div key="steps" className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                  <div className={`text-[11px] font-bold uppercase tracking-widest mb-3 flex items-center justify-between ${theme === 'light' ? 'text-gray-500' : 'text-[#52525b]'}`}>
+                    <span>Step Management</span>
+                    <button onClick={addStep} className={`${theme === 'light' ? 'text-[#88aa00]' : 'text-[#ccff00]'} hover:underline text-[10px] flex items-center gap-1`}>
+                      <RiAddLine className="w-3 h-3" /> Add Step
+                    </button>
+                  </div>
+                  <Reorder.Group axis="y" values={steps} onReorder={setSteps} className="space-y-2">
                     {steps.map((step) => {
                       const stepFields = fields.filter(f => f.stepId === step.id);
                       return (
                         <Reorder.Item 
                           key={step.id} 
                           value={step}
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.9 }}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 10 }}
                           onClick={() => setActiveStepId(step.id)}
                           className={`group p-2 rounded-lg border cursor-pointer transition-all ${
                             activeStepId === step.id 
@@ -278,11 +307,11 @@ export default function FormBuilder() {
                                 <input 
                                   value={step.label}
                                   onChange={(e) => updateStepLabel(step.id, e.target.value)}
-                                  className="bg-transparent border-none outline-none text-[12px] font-bold text-white w-full p-0 focus:ring-0"
+                                  className={`bg-transparent border-none outline-none text-[12px] font-bold w-full p-0 focus:ring-0 ${theme === 'light' ? 'text-black' : 'text-white'}`}
                                 />
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-black/40 text-gray-400">
+                                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${theme === 'light' ? 'bg-gray-100 text-gray-600' : 'bg-black/40 text-gray-400'}`}>
                                   {stepFields.length}
                                 </span>
                                 {steps.length > 1 && (
@@ -298,7 +327,7 @@ export default function FormBuilder() {
                             
                             {/* Nested Fields List */}
                             {activeStepId === step.id && stepFields.length > 0 && (
-                              <div className="pl-5 space-y-1 mt-1 border-l border-white/5 mx-1">
+                              <div className={`pl-5 space-y-1 mt-1 border-l mx-1 ${theme === 'light' ? 'border-gray-200' : 'border-white/5'}`}>
                                 {stepFields.map((field) => (
                                   <div 
                                     key={field.id}
@@ -308,8 +337,8 @@ export default function FormBuilder() {
                                     }}
                                     className={`flex items-center gap-2 p-1.5 rounded-md text-[11px] transition-colors ${
                                       activeFieldId === field.id 
-                                        ? 'bg-[#ccff00]/20 text-[#ccff00] font-bold' 
-                                        : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
+                                        ? (theme === 'light' ? 'bg-[#ccff00]/20 text-[#88aa00] font-bold' : 'bg-[#ccff00]/20 text-[#ccff00] font-bold')
+                                        : (theme === 'light' ? 'text-gray-500 hover:bg-gray-100 hover:text-black' : 'text-gray-500 hover:bg-white/5 hover:text-gray-300')
                                     }`}
                                   >
                                     <span className="w-1.5 h-1.5 rounded-full bg-current opacity-40 shrink-0" />
@@ -322,46 +351,51 @@ export default function FormBuilder() {
                         </Reorder.Item>
                       )
                     })}
-                  </AnimatePresence>
-                </Reorder.Group>
-              </div>
-            )}
-            <div className="relative">
-              <RiSearchLine className="absolute left-3 top-1/2 -translate-y-1/2 w-[16px] h-[16px] text-[#71717a]" />
-              <Input 
-                placeholder="Search fields..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full h-9 rounded-md pl-9 text-[13px] placeholder:text-[#52525b] focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black' : 'bg-[#111113] border-[#27272a] text-white'}`}
-              />
-            </div>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-6">
-            {filteredCategories.map((category, idx) => (
-              <div key={idx}>
-                <div className="text-[11px] font-bold text-[#52525b] uppercase tracking-widest mb-3">{category.category}</div>
-                <div className="space-y-2.5">
-                  {category.items.map((item, i) => (
-                    <div 
-                      key={i} 
-                      onClick={() => addField(item)}
-                      className={`group flex gap-3 p-3 rounded-lg border cursor-pointer transition-colors relative ${theme === 'light' ? 'bg-white border-gray-200 hover:border-[#ccff00] hover:bg-gray-50' : 'bg-[#111113] border-[#27272a] hover:border-[#ccff00]/50 hover:bg-[#18181b]'}`}
-                    >
-                      <div className={`w-[32px] h-[32px] shrink-0 border rounded flex items-center justify-center transition-colors ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-gray-500 group-hover:text-[#ccff00]' : 'bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] group-hover:text-[#ccff00]'}`}>
-                        <item.icon className="w-[16px] h-[16px]" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className={`text-[13.5px] font-medium mb-0.5 ${theme === 'light' ? 'text-black' : 'text-white'}`}>{item.label}</span>
-                        <span className="text-[12px] text-[#71717a] leading-tight">{item.desc}</span>
-                      </div>
-                    </div>
-                  ))}
+                  </Reorder.Group>
                 </div>
-              </div>
-            ))}
-            {filteredCategories.length === 0 && (
-               <div className="text-center text-[13px] text-[#71717a] py-6">No fields found matching "{searchQuery}"</div>
-            )}
+              ) : (
+                <div key="fields" className="flex-1 flex flex-col overflow-hidden">
+                  <div className={`p-4 border-b shrink-0 ${theme === 'light' ? 'border-gray-100' : 'border-[#1e1e21]'}`}>
+                    <div className="relative">
+                      <RiSearchLine className={`absolute left-3 top-1/2 -translate-y-1/2 w-[16px] h-[16px] ${theme === 'light' ? 'text-gray-400' : 'text-[#71717a]'}`} />
+                      <Input 
+                        placeholder="Search fields..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className={`w-full h-9 rounded-md pl-9 text-[13px] focus-visible:ring-1 focus-visible:ring-[#ccff00] ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-black placeholder:text-gray-500' : 'bg-[#111113] border-[#27272a] text-white placeholder:text-[#52525b]'}`}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
+                    {filteredCategories.map((category, idx) => (
+                      <div key={idx}>
+                        <div className={`text-[11px] font-bold uppercase tracking-widest mb-3 ${theme === 'light' ? 'text-gray-500' : 'text-[#52525b]'}`}>{category.category}</div>
+                        <div className="space-y-2.5">
+                          {category.items.map((item, i) => (
+                            <div 
+                              key={i} 
+                              onClick={() => addField(item)}
+                              className={`group flex gap-3 p-3 rounded-lg border cursor-pointer transition-colors relative ${theme === 'light' ? 'bg-white border-gray-200 hover:border-[#ccff00] hover:bg-gray-50' : 'bg-[#111113] border-[#27272a] hover:border-[#ccff00]/50 hover:bg-[#18181b]'}`}
+                            >
+                              <div className={`w-[32px] h-[32px] shrink-0 border rounded flex items-center justify-center transition-colors ${theme === 'light' ? 'bg-gray-50 border-gray-200 text-gray-500 group-hover:text-[#ccff00]' : 'bg-[#0a0a0a] border-[#27272a] text-[#a1a1aa] group-hover:text-[#ccff00]'}`}>
+                                <item.icon className="w-[16px] h-[16px]" />
+                              </div>
+                              <div className="flex flex-col">
+                                <span className={`text-[13.5px] font-medium mb-0.5 ${theme === 'light' ? 'text-black' : 'text-white'}`}>{item.label}</span>
+                                <span className="text-[12px] text-[#71717a] leading-tight">{item.desc}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                    {filteredCategories.length === 0 && (
+                      <div className="text-center text-[13px] text-[#71717a] py-6">No fields found matching "{searchQuery}"</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </AnimatePresence>
           </div>
         </aside>
 

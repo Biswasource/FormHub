@@ -126,7 +126,7 @@ export default function SubmissionTable({ initialSubmissions, dataFields, formId
                     if (val === false) val = "No"
 
                     return (
-                      <td key={field.id} className="p-4 whitespace-pre-wrap max-w-[300px] truncate group-hover:text-green-700 dark:group-hover:text-[#ccff00] transition-colors">
+                      <td key={field.id} className="p-4 whitespace-pre-wrap max-w-[400px] group-hover:text-green-700 dark:group-hover:text-[#ccff00] transition-colors break-words">
                         {val !== undefined && val !== null && val !== "" ? String(val) : <span className="text-gray-400 dark:text-[#52525b] italic">Empty</span>}
                       </td>
                     )
